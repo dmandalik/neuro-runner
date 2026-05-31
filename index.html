@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Neuro-Runner — neuroevolution in your browser</title>
+    <style>
+      :root {
+        --bg: #0a0d12;
+        --fg: #e7e9ee;
+        --dim: #6b7280;
+        --line: rgba(255, 255, 255, 0.1);
+        --accent: #6ea8fe;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 18px;
+        background: var(--bg);
+        color: var(--fg);
+        font: 14px/1.5 ui-monospace, "SF Mono", Menlo, monospace;
+        padding: 24px;
+      }
+      h1 {
+        font-size: 20px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        margin: 0;
+      }
+      p.sub { color: var(--dim); margin: 0; max-width: 560px; text-align: center; }
+      .stage {
+        width: min(820px, 100%);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.02);
+      }
+      canvas { display: block; width: 100%; height: 320px; }
+      .hud {
+        width: min(820px, 100%);
+        display: flex;
+        gap: 22px;
+        flex-wrap: wrap;
+      }
+      .hud div span:first-child {
+        display: block;
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--dim);
+      }
+      .hud div span:last-child { font-size: 18px; }
+      .controls { display: flex; gap: 10px; flex-wrap: wrap; }
+      button {
+        font: inherit;
+        color: var(--fg);
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 8px 14px;
+        cursor: pointer;
+        transition: border-color 0.15s;
+      }
+      button:hover { border-color: var(--accent); }
+      a { color: var(--accent); }
+    </style>
+  </head>
+  <body>
+    <h1>Neuro-Runner</h1>
+    <p class="sub">
+      A swarm of tiny neural networks learns to clear an endless obstacle course
+      by neuroevolution — no training data, no labels, no dependencies.
+    </p>
+
+    <div class="stage"><canvas id="sim"></canvas></div>
+
+    <div class="hud">
+      <div><span>Generation</span><span id="gen">1</span></div>
+      <div><span>Alive</span><span id="alive">0/0</span></div>
+      <div><span>Best now</span><span id="best">0</span></div>
+      <div><span>Record</span><span id="record">0</span></div>
+    </div>
+
+    <div class="controls">
+      <button id="speed">Speed: 1×</button>
+      <button id="reset">Reset</button>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

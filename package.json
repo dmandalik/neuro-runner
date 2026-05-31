@@ -1,0 +1,16 @@
+{
+  "name": "neuro-runner",
+  "version": "1.0.0",
+  "description": "A population of tiny neural networks learns to clear an endless obstacle course by neuroevolution — no training data, no dependencies.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.4.0",
+    "vite": "^5.2.0"
+  }
+}
