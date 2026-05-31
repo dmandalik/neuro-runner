@@ -19,7 +19,6 @@ const H = 120;
 const GROUND_Y = H - 16;
 const AGENT_X = W * 0.16;
 const AGENT_W = 9;
-const AGENT_H = 13;
 
 const OBS_MIN_W = 7;
 const OBS_MAX_W = 15;
