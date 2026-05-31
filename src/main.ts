@@ -4,9 +4,9 @@
 // controls. Auto-pauses when the tab is hidden.
 // ---------------------------------------------------------------------------
 
-import type { Palette, World } from "./types";
+import type { Agent, Palette, World } from "./types";
 import { createWorld, resetWorld, step } from "./engine";
-import { drawWorld } from "./render";
+import { drawNet, drawWorld } from "./render";
 
 const PALETTE: Palette = {
   accent: getCssVar("--accent", "#6ea8fe"),
@@ -24,6 +24,9 @@ function getCssVar(name: string, fallback: string): string {
 const canvas = document.getElementById("sim") as HTMLCanvasElement;
 const ctx = canvas.getContext("2d")!;
 
+const netCanvas = document.getElementById("net") as HTMLCanvasElement;
+const netCtx = netCanvas.getContext("2d")!;
+
 const $ = (id: string) => document.getElementById(id)!;
 const SPEEDS = [1, 2, 4, 8];
 let speedIdx = 0;
@@ -31,12 +34,30 @@ let speedIdx = 0;
 let world: World = createWorld();
 
 // --- canvas sizing (DPR-aware) ---------------------------------------------
-function resize() {
-  const rect = canvas.getBoundingClientRect();
+function sizeCanvas(el: HTMLCanvasElement, c: CanvasRenderingContext2D) {
+  const rect = el.getBoundingClientRect();
   const dpr = Math.min(2, window.devicePixelRatio || 1);
-  canvas.width = Math.max(1, Math.round(rect.width * dpr));
-  canvas.height = Math.max(1, Math.round(rect.height * dpr));
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  el.width = Math.max(1, Math.round(rect.width * dpr));
+  el.height = Math.max(1, Math.round(rect.height * dpr));
+  c.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+
+function resize() {
+  sizeCanvas(canvas, ctx);
+  sizeCanvas(netCanvas, netCtx);
+}
+
+/** The fittest still-alive agent (falls back to the overall fittest). */
+function leaderOf(world: World): Agent | null {
+  let leader: Agent | null = null;
+  for (const a of world.agents) {
+    if (a.alive && (!leader || a.fitness > leader.fitness)) leader = a;
+  }
+  if (leader) return leader;
+  for (const a of world.agents) {
+    if (!leader || a.fitness > leader.fitness) leader = a;
+  }
+  return leader;
 }
 window.addEventListener("resize", resize);
 resize();
@@ -59,6 +80,13 @@ function frame(now: number) {
   }
   const dpr = Math.min(2, window.devicePixelRatio || 1);
   drawWorld(ctx, world, PALETTE, canvas.width / dpr, canvas.height / dpr);
+
+  const leader = leaderOf(world);
+  if (leader) {
+    const { inputs, hidden, out } = leader.act;
+    drawNet(netCtx, leader.net, inputs, hidden, out, PALETTE, netCanvas.width / dpr, netCanvas.height / dpr);
+  }
+
   updateHud();
   raf = requestAnimationFrame(frame);
 }
