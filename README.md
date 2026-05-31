@@ -62,8 +62,9 @@ src/
   types.ts    shared interfaces (no imports)
   net.ts      network: make / clone / forward / mutate / crossover
   engine.ts   world: createWorld / step / evolve / resetWorld  (the GA lives here)
-  render.ts   canvas drawing — pure, takes a palette
+  render.ts   canvas drawing — pure, takes a palette (course + live net diagram)
   main.ts     vanilla demo: DPR canvas, fixed-timestep RAF loop, HUD, controls
+  headless.ts node trainer / benchmark — runs the core with no DOM
 index.html    the demo page
 ```
 
@@ -77,6 +78,16 @@ headless Node harness without touching the simulation.
 npm install
 npm run dev      # vite dev server
 npm run build    # type-check + production build to dist/
+npm run train    # headless: evolve in the terminal, print the learning curve
+```
+
+`npm run train` runs the simulation core in Node with no canvas — handy for
+benchmarking or sanity-checking the GA. It takes flags:
+
+```bash
+npm run train -- --gens 200    # run longer
+npm run train -- --seed 7      # a different deterministic run
+npm run train -- --pop 150     # bigger population
 ```
 
 ## Tuning
